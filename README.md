@@ -67,8 +67,24 @@ addpass --name "My new Site" +user "zeltak" +branch "branch" +custom "foobar" +a
 * Second argument can be `--root` followed by absolute path to your password-store. addpass also uses root config setting from rofi-pass config file. If both are not found, PASSWORD_STORE_DIR variable is checked. If none of the above are found, the default location `$HOME/.password-store` is used.
 * `--root` can also be a colon separated list of directories, in which case you can navigate between them on the main menu with Shift+Left and Shift+Right.
 * Fieldnames are defined with `+` and the actual value is defined inside the quotations. You can add as many fields as you like
+* Running arbitrary commands with the `shell_whatever` feature (see OTP section below).
 
 Also included is an import script for keepass2 databases. It's the same script that can be downloaded from the pass homepage, with some minor modifications to match rofi-pass structure.
+
+### Handling OTP tokens
+You can add for example the following field to an entry:
+
+```
+shell_otp: echo JCT...XR3 | xargs -n1 /usr/bin/oathtool --totp=sha512 -b -s 30 -d 6
+```
+
+When `rofi-pass` encounters this during typing, then the shell command
+will be executed first and then whatever is printed to the stdout by
+that command is typed by `rofi-pass`.
+
+In the example above, we use `xargs` and `echo` together to hide the
+secret (`JCT...XR4`) from other users running `ps -ef` or similar
+commands at the same time on the machine.
 
 ## FAQ
 
